@@ -20,6 +20,8 @@ class RecordSoundViewController: UIViewController, AVAudioRecorderDelegate {
     let startRecordingString = "Tap to Begin Recording"
     let stopRecordingString = "Tap to Stop Recording"
     
+    var observation: NSKeyValueObservation?
+    
     var audioRecorder: AVAudioRecorder!
     
     enum recordButtonState: Int {
@@ -35,6 +37,14 @@ class RecordSoundViewController: UIViewController, AVAudioRecorderDelegate {
         super.viewWillAppear(animated)
         startStopRecordingButton.imageView?.image = startRecordImage
         recordLabel.text = startRecordingString
+        
+        
+    }
+    
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
     }
     
     override func didReceiveMemoryWarning() {
@@ -52,9 +62,19 @@ class RecordSoundViewController: UIViewController, AVAudioRecorderDelegate {
         }
     }
     
+    func resizeImage(image: UIImage, newWidth: CGFloat) -> UIImage {
+        UIGraphicsBeginImageContext(CGSize(width: 155, height: 155))
+        image.draw(in: CGRect(origin: CGPoint(x: 0, y: 0), size: CGSize(width: 155, height: 155)))
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        
+        return newImage
+    }
+    
     func startAudioRecording() {
         recordLabel.text = stopRecordingString
-        startStopRecordingButton.setImage(stopRecordingImage, for: .normal)
+        startStopRecordingButton.setImage(resizeImage(image: stopRecordingImage!, newWidth: 150), for: .normal)
+        
         let dirPath = NSSearchPathForDirectoriesInDomains(.documentDirectory,.userDomainMask, true)[0] as String
         let recordingName = "recordedVoice.wav"
         let pathArray = [dirPath, recordingName]
@@ -100,6 +120,7 @@ class RecordSoundViewController: UIViewController, AVAudioRecorderDelegate {
             playSoundsVC.recordedAudioURL = recordedAudioURL
         }
     }
+    
     
 }
 
